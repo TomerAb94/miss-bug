@@ -1,0 +1,59 @@
+[
+    {
+    "_id": "jkl012",
+    "title": "Login page crashes",
+    "description": "Page crashes when submitting login form",
+    "severity": 4,
+    "createdAt": 1542107360000
+},
+{
+    "_id": "mno345",
+    "title": "Profile picture upload fails",
+    "description": "Users cannot upload profile pictures",
+    "severity": 3,
+    "createdAt": 1542107360500
+},
+{
+    "_id": "pqr678",
+    "title": "Notification system not sending emails",
+    "description": "Emails are not sent for notifications",
+    "severity": 4,
+    "createdAt": 1542107361000
+},
+{
+    "_id": "stu901",
+    "title": "Payment gateway timeout",
+    "description": "Payment requests timeout unexpectedly",
+    "severity": 1,
+    "createdAt": 1542107361500
+},
+{
+    "_id": "vwx234",
+    "title": "Dashboard loading slowly",
+    "description": "Dashboard takes too long to load data",
+    "severity": 3,
+    "createdAt": 1542107362000
+},
+{
+    "_id": "yza567",
+    "title": "Incorrect user data display",
+    "description": "User data shown is outdated or incorrect",
+    "severity": 2,
+    "createdAt": 1542107362500
+},
+{
+    "_id": "bcd890",
+    "title": "Mobile view layout broken",
+    "description": "Layout issues on mobile devices",
+    "severity": 3,
+    "createdAt": 1542107363000
+},
+{
+    "_id": "efg123",
+    "title": "Export report feature missing",
+    "description": "Impossible to export reports in PDF",
+    "severity": 2,
+    "createdAt": 1542107363500
+}
+
+]
