@@ -1,11 +1,12 @@
 import express from 'express'
-const app = express()
-
-// Add this line before your routes
-app.use(express.static('public'))
 
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
+
+const app = express()
+
+// app.use(express.static('public'))
+
 
 app.get('/', (req, res) => {
   res.send('bugs server is running')
@@ -63,6 +64,8 @@ app.get('/api/bug/:id/remove', (req, res) => {
       res.status(400).send('Failed to remove bug')
     })
 })
+
+//add redirect
 
 const port = 3030
 app.listen(port, () =>
