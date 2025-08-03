@@ -1,12 +1,13 @@
 import express from 'express'
+import cookieParser from 'cookie-parser'
 
 import { bugService } from './services/bug.service.js'
 import { loggerService } from './services/logger.service.js'
 
 const app = express()
 
-// app.use(express.static('public'))
-
+app.use(express.static('public'))
+app.use(cookieParser())
 
 app.get('/', (req, res) => {
   res.send('bugs server is running')
@@ -44,6 +45,9 @@ app.get('/api/bug/save', (req, res) => {
 app.get('/api/bug/:id', (req, res) => {
   const bugId = req.params.id
 
+  let visitedBugs = req.cookies.visitedBugs || []
+  if (visitedBugs.length >= 3) return res.status(401).send('Wait for a bit')
+
   bugService
     .getById(bugId)
     .then((bug) => res.send(bug))
@@ -51,6 +55,11 @@ app.get('/api/bug/:id', (req, res) => {
       loggerService.error('Failed to get bug', err)
       res.status(400).send('Failed to get bug')
     })
+
+  if (!visitedBugs.includes(bugId)) {
+    res.cookie('visitedBugs', [...visitedBugs, bugId], { maxAge: 7000})
+  }
+  
 })
 
 app.get('/api/bug/:id/remove', (req, res) => {
@@ -65,7 +74,7 @@ app.get('/api/bug/:id/remove', (req, res) => {
     })
 })
 
-//add redirect
+app.get('/nono', (req, res) => res.redirect('/'))
 
 const port = 3030
 app.listen(port, () =>
