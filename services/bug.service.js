@@ -12,8 +12,32 @@ export const bugService = {
   getEmptyBug,
 }
 
-function query(filterBy = {}) {
-  return Promise.resolve(bugs)
+function query(filter, sort, page) {
+  let filteredBugs = bugs
+
+  console.log('Filtering bugs with:', filter);
+  
+
+  if (filter.txt) {
+    const regex = new RegExp(filter.txt, 'i')
+    filteredBugs = filteredBugs.filter(
+      (bug) => regex.test(bug.title) || regex.test(bug.description)
+    )
+  }
+
+  if (filter.minSeverity) {
+    filteredBugs = filteredBugs.filter(
+      (bug) => bug.severity >= filter.minSeverity
+    )
+  }
+
+  if (filter.labels && filter.labels.length) {
+    filteredBugs = filteredBugs.filter((bug) =>
+      filter.labels.every((label) => bug.labels.includes(label))
+    )
+  }
+
+  return Promise.resolve(filteredBugs)
 }
 
 function getById(bugId) {
@@ -44,7 +68,12 @@ function _saveBugs() {
   return writeJsonFile('data/bug.json', bugs)
 }
 
-function getEmptyBug({title = '', description = '', severity = 0, labels = []}) {
+function getEmptyBug({
+  title = '',
+  description = '',
+  severity = 0,
+  labels = [],
+}) {
   return {
     title: title,
     description: description,

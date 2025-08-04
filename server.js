@@ -9,10 +9,29 @@ const app = express()
 app.use(express.static('public'))
 app.use(cookieParser())
 app.use(express.json())
+app.set('query parser', 'extended')
 
 app.get('/api/bug', (req, res) => {
+  const { sortBy, sortDir, pageIdx, txt, minSeverity, labels } = req.query
+
+  const filter = {
+    txt: txt || '',
+    minSeverity: +minSeverity || 0,
+    labels: labels || [],
+  }
+
+  const sort = {
+    sortBy: sortBy || '',
+    sortDir: +sortDir || 1,
+  }
+
+  const page = {
+    pageIdx: +pageIdx || 0,
+    pageSize: 3,
+  }
+
   bugService
-    .query()
+    .query(filter, sort, page)
     .then((bugs) => res.send(bugs))
     .catch((err) => {
       loggerService.error('Failed to get bugs', err)
