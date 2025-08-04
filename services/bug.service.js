@@ -15,27 +15,42 @@ export const bugService = {
 function query(filter, sort, page) {
   let filteredBugs = bugs
 
-  console.log('Filtering bugs with:', filter);
   
-
+  //* Filtering logic
+  // console.log('Filtering bugs with:', filter)
   if (filter.txt) {
     const regex = new RegExp(filter.txt, 'i')
     filteredBugs = filteredBugs.filter(
       (bug) => regex.test(bug.title) || regex.test(bug.description)
     )
   }
-
+  
   if (filter.minSeverity) {
     filteredBugs = filteredBugs.filter(
       (bug) => bug.severity >= filter.minSeverity
     )
   }
-
+  
   if (filter.labels && filter.labels.length) {
     filteredBugs = filteredBugs.filter((bug) =>
       filter.labels.every((label) => bug.labels.includes(label))
-    )
+  )
+}
+
+//* Sorting logic
+console.log('Sorting bugs with:', sort)
+  if (sort.sortBy) {
+    filteredBugs.sort((a, b) => {
+      const aValue = a[sort.sortBy]
+      const bValue = b[sort.sortBy]
+      return (aValue > bValue ? 1 : -1) * sort.sortDir
+    })
   }
+
+  //* Pagination logic
+  const startIdx = page.pageIdx * page.pageSize
+  const endIdx = startIdx + page.pageSize
+  filteredBugs = filteredBugs.slice(startIdx, endIdx)
 
   return Promise.resolve(filteredBugs)
 }
