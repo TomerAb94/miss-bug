@@ -15,7 +15,6 @@ export const bugService = {
 function query(filter, sort, page) {
   let filteredBugs = bugs
 
-  
   //* Filtering logic
   // console.log('Filtering bugs with:', filter)
   if (filter.txt) {
@@ -24,21 +23,21 @@ function query(filter, sort, page) {
       (bug) => regex.test(bug.title) || regex.test(bug.description)
     )
   }
-  
+
   if (filter.minSeverity) {
     filteredBugs = filteredBugs.filter(
       (bug) => bug.severity >= filter.minSeverity
     )
   }
-  
+
   if (filter.labels && filter.labels.length) {
     filteredBugs = filteredBugs.filter((bug) =>
       filter.labels.every((label) => bug.labels.includes(label))
-  )
-}
+    )
+  }
 
-//* Sorting logic
-console.log('Sorting bugs with:', sort)
+  //* Sorting logic
+  // console.log('Sorting bugs with:', sort)
   if (sort.sortBy) {
     filteredBugs.sort((a, b) => {
       const aValue = a[sort.sortBy]
@@ -48,6 +47,7 @@ console.log('Sorting bugs with:', sort)
   }
 
   //* Pagination logic
+  // console.log('Paginating bugs with:', page)
   const startIdx = page.pageIdx * page.pageSize
   const endIdx = startIdx + page.pageSize
   filteredBugs = filteredBugs.slice(startIdx, endIdx)
