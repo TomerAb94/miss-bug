@@ -8,7 +8,8 @@ export const bugService = {
   query,
   getById,
   remove,
-    save,
+  save,
+  getEmptyBug,
 }
 
 function query(filterBy = {}) {
@@ -34,7 +35,6 @@ function save(bug) {
     bugs[idx] = { ...bugs[idx], ...bug }
   } else {
     bug._id = makeId()
-    bug.createdAt = Date.now()
     bugs.unshift(bug)
   }
   return _saveBugs().then(() => bug)
@@ -42,4 +42,14 @@ function save(bug) {
 
 function _saveBugs() {
   return writeJsonFile('data/bug.json', bugs)
+}
+
+function getEmptyBug({title = '', description = '', severity = 0, labels = []}) {
+  return {
+    title: title,
+    description: description,
+    severity: severity,
+    createdAt: Date.now(),
+    labels: labels,
+  }
 }

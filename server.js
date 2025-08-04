@@ -8,10 +8,7 @@ const app = express()
 
 app.use(express.static('public'))
 app.use(cookieParser())
-
-app.get('/', (req, res) => {
-  res.send('bugs server is running')
-})
+app.use(express.json())
 
 app.get('/api/bug', (req, res) => {
   bugService
@@ -20,25 +17,6 @@ app.get('/api/bug', (req, res) => {
     .catch((err) => {
       loggerService.error('Failed to get bugs', err)
       res.status(400).send('Failed to get bugs')
-    })
-})
-
-app.get('/api/bug/save', (req, res) => {
-  const { title, severity, description, _id } = req.query
-
-  const bug = {
-    _id,
-    title,
-    severity: +severity,
-    description,
-  }
-
-  bugService
-    .save(bug)
-    .then((savedBug) => res.send(savedBug))
-    .catch((err) => {
-      loggerService.error('Failed to save bug', err)
-      res.status(400).send('Failed to save bug')
     })
 })
 
@@ -57,12 +35,35 @@ app.get('/api/bug/:id', (req, res) => {
     })
 
   if (!visitedBugs.includes(bugId)) {
-    res.cookie('visitedBugs', [...visitedBugs, bugId], { maxAge: 7000})
+    res.cookie('visitedBugs', [...visitedBugs, bugId], { maxAge: 7000 })
   }
-  
 })
 
-app.get('/api/bug/:id/remove', (req, res) => {
+app.put('/api/bug/', (req, res) => {
+  const bug = req.body
+
+  bugService
+    .save(bug)
+    .then((savedBug) => res.send(savedBug))
+    .catch((err) => {
+      loggerService.error('Failed to update bug', err)
+      res.status(400).send('Failed to update bug')
+    })
+})
+
+app.post('/api/bug/', (req, res) => {
+  const bug = bugService.getEmptyBug(req.body)
+
+  bugService
+    .save(bug)
+    .then((savedBug) => res.send(savedBug))
+    .catch((err) => {
+      loggerService.error('Failed to create bug', err)
+      res.status(400).send('Failed to create bug')
+    })
+})
+
+app.delete('/api/bug/:id/remove', (req, res) => {
   const bugId = req.params.id
 
   bugService
@@ -73,8 +74,6 @@ app.get('/api/bug/:id/remove', (req, res) => {
       res.status(400).send('Failed to remove bug')
     })
 })
-
-app.get('/nono', (req, res) => res.redirect('/'))
 
 const port = 3030
 app.listen(port, () =>
